@@ -1,0 +1,8 @@
+/.idea/
+*.class
+*.iml
+/T-Manager/target/
+*.xml
+tm-frontend/dist/*
+tm-frontend/node_modules/*
+log/
