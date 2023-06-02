@@ -39,7 +39,7 @@ public class ResourceController {
   @GetMapping("/show/{filename}")
   public String showPhotos(@PathVariable String filename) {
     try {
-      String path = "///home/ubuntu/images/";
+      String path = "///home/tmanager/images/";
       // Since you are reading files from the native, file must be added, and path is
       // the path in the application configuration file
       return "file:" + path + filename;
