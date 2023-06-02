@@ -11,7 +11,6 @@ Vue.use(Router);
 
 export default new Router({
   mode: "history",
-  base: "/T-Manager/",
   routes: [
     {
       path: "/",

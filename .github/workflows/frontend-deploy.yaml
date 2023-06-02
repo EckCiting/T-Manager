@@ -18,13 +18,16 @@ jobs:
           npm install
           npm run build
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: tm-frontend/dist
-          CLEAN: true
+      - name: Deploy over SSH
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rltgoDzvO --delete"
+          SOURCE: "tm-frontend/dist/"
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          TARGET: "${{ secrets.FRONTEND_DIR }}"
+
 
       - name: Copy 404 page
         run: cp tm-frontend/dist/index.html tm-frontend/dist/404.html
