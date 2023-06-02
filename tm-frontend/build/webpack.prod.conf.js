@@ -65,7 +65,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       template: 'index.html',
       inject: true,
       templateParameters: {
-        csp: `default-src 'self' tmanager.chnnhc.com;`,
+        csp: `default-src 'self' tmanager.chnnhc.com cdn.jsdelivr.net;`,
       },
       minify: {
         removeComments: true,
