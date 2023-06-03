@@ -18,6 +18,9 @@ jobs:
           npm install
           npm run build
 
+      - name: Copy 404 page
+        run: cp tm-frontend/dist/index.html tm-frontend/dist/404.html
+
       - name: Deploy over SSH
         uses: easingthemes/ssh-deploy@v2.1.5
         env:
@@ -29,5 +32,3 @@ jobs:
           TARGET: "${{ secrets.FRONTEND_DIR }}"
 
 
-      - name: Copy 404 page
-        run: cp tm-frontend/dist/index.html tm-frontend/dist/404.html
