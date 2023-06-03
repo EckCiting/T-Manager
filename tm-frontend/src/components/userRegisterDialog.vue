@@ -76,7 +76,7 @@
               :disabled="!this.valid"
               :loading="loading"
               color="primary"
-              @click="checkEmail"
+              @click="getVerifyCode"
               style="color: #fff; width: 100px"
               depressed
             >
@@ -201,7 +201,7 @@ export default {
     checkName: function (val) {
       this.$axios({
         method: "get",
-        url: this.$store.state.host + "auth/checkname?username=" + val,
+        url: this.$store.state.host + "auth/checkname/" + val,
       })
         .then((res) => {
           this.userNameErr =
@@ -211,16 +211,17 @@ export default {
           this.$store.commit("response", error);
         });
     },
-    checkEmail: function() {
+    checkEmail: function(val) {
       this.$axios({
         method: "get",
-        url: this.$store.state.host + "auth/checkemail?email=" + this.userEmail,
+        url: this.$store.state.host + "auth/checkemail/" + val,
       })
         .then((res) => {
           if(res.data.status == 321)
-            alert("Email already used"); 
-          else
-            this.getVerifyCode();
+            alert("Email already used");
+          // else
+            // alert("success")
+            // this.getVerifyCode();
         })
         .catch((error) => {
           this.$store.commit("response", error);
@@ -339,7 +340,12 @@ export default {
   },
   watch: {
     userName: function (val) {
-      return this.checkName(val);
+      if(val !== "")
+        return this.checkName(val);
+    },
+    userEmail: function(val) {
+      if(val !== "")
+        return this.checkEmail(val);
     }
   },
 };
