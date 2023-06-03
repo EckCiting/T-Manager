@@ -113,13 +113,21 @@ spring.mail.port=[service port]
 
 **Note: Server OS: Ubuntu 18.04 TLS**
 
+## Set secrets for GitHub Actions
 
+Your repository → Settings → Secrets and variables → Actions
+
+```
+FRONTEND_DIR = tm-frontend # recommend
+SSH_HOST = [your server host]
+SSH_PRIVATE_KEY = [your ssh private key for that server]
+SSH_USER = [your server username]
+WORK_DIR = T-Manager # recommend
+```
 
 ## Frontend
 
-### on personal computer:
-
-#### Step 1: Configure stored host
+**Before deployment, you should modify stored host on personal computer and commit to GitHub**
 
 go to the project folder `T-Manager`
 
@@ -149,30 +157,12 @@ change the `host` like this:
 host: "http://[your server ip]/api/"
 ```
 
-#### Step 2: Package the frontend project 
-
-```bash
-npm run build
-```
-
-upload `dist` folder in the `backend folder` to the server 
-
-```bash
-scp -r dist [username]@[yourserver]:/home/[username]
-```
-
 ### on server:
 
 #### Step 1: install and configure Nginx
 
 ```bash
 sudo apt install nginx
-```
-
-move the  frontend content (an `index.html` and a folder `static`) to the website root
-
-```bash
-sudo mv ~/dist/* /var/www/html
 ```
 
 modify Nginx config
@@ -184,6 +174,8 @@ sudo vi /etc/nginx/sites-enabled/default
 find the following content
 
 ```nginx
+root /var/www/html/
+
 location / {
 	# First attempt to serve request as file, then
 	# as directory, then fall back to displaying a 404.
@@ -194,6 +186,8 @@ location / {
 change the content like this
 
 ```nginx
+root /home/[your username]/tm-frontend/; // same as FRONTEND_DIR in Github Actions Secrets
+
 location / {
 	try_files $uri $uri/ /index.html;
 }
@@ -212,9 +206,7 @@ sudo systemctl restart nginx
 
 ## Backend
 
-### on personal computer:
-
-#### Step 1: Configure related configuration files
+**Before deployment, you should modify some configuration files on personal computer and commit to GitHub:**
 
 go to the project folder `T-Manager`
 
@@ -257,21 +249,6 @@ spring.mail.password=[password given by your SMTP service provider]
 # port normally 465
 spring.mail.port=[service port] 
 ```
-
-#### Step 2: package the backend project
-
-```bash
-mvn package # if you are using Intellij IDEA, you do not need this command. Just use IDEA to package
-```
-
-after build success, upload the jar package to your server
-
-```bash
-cd target
-scp demo-0.0.1-SNAPSHOT.jar [username]@[yourserver]:/home/[username]
-```
-
-
 
 ### on server:
 
@@ -319,7 +296,20 @@ save debian.cnf
 sudo apt install openjdk-8-jdk
 ```
 
-#### Step 3: Start T-Manager service
+#### Step 3: add some environment variables
+
+```bash
+vi /etc/environment
+```
+
+```
+DB_USERNAME="[your database username]"
+DB_PASSWORD="[your database password]"
+MAIL_ADDRESS="[your stmp mail address]"
+MAIL_PASSWORD="[your mail password]"
+```
+
+#### Step 4: Start T-Manager service
 
 Install `screen` to ensure that the jar can run in the background after exiting the terminal
 
